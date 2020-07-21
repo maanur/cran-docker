@@ -1,7 +1,8 @@
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 ARG CRAN_MIRROR=cran.r-project.org
 RUN microdnf install rsync nginx && \
-    mkdir /var/cran
+    chmod g+rwx /var/cache/nginx /var/run /var/log/nginx && \
+    mkdir /var/cran 
 RUN rsync \
     --verbose --human-readable \
     --times \
@@ -19,4 +20,5 @@ RUN rsync \
     /var/cran/
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 8080
+USER nginx
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
