@@ -22,7 +22,6 @@ automap
 backports
 backtest
 BaM
-base
 base64
 base64enc
 bayesplot
@@ -83,7 +82,6 @@ coindeskr
 colorspace
 commonmark
 compare
-compiler
 config
 copula
 CORElearn
@@ -101,7 +99,6 @@ curl
 CVST
 DataCombine
 dataMeta
-datasets
 datasets.load
 data.table
 DBI
@@ -264,9 +261,6 @@ gower
 gplots
 graph
 graphframes
-graphics
-grDevices
-grid
 gridBase
 gridExtra
 gsl
@@ -380,7 +374,6 @@ mco
 memisc
 memoise
 MESS
-methods
 Metrics
 mgcv
 mi
@@ -681,7 +674,6 @@ spd
 spData
 speedglm
 splancs
-splines
 sprintr
 sqldf
 SQUAREM
@@ -691,8 +683,6 @@ StanHeaders
 staplr
 statip
 statmod
-stats
-stats4
 stinepack
 stlplus
 stopwords
@@ -720,7 +710,6 @@ sys
 systemfit
 systemfonts
 tables
-tcltk
 tcltk2
 TeachingDemos
 tensor
@@ -742,7 +731,6 @@ tinytex
 tkrplot
 tm
 TMB
-tools
 tree
 treeClust
 trimcluster
@@ -765,7 +753,6 @@ UScensus2010
 useful
 usethis
 utf8
-utils
 uuid
 varhandle
 vars
