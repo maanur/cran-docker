@@ -1,0 +1,23 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  serviceAccountName: {{ .Release.Name }}-sa
+  triggers:
+    - name: {{ .Release.Name }}-master
+      interceptors:
+        - github:
+            eventTypes:
+              - push
+            secretRef:
+              secretName: {{ .Release.Name }}-webhook
+              secretKey: value
+        - cel:
+            filter: body.ref == "refs/heads/master"
+      bindings:
+        - name: webhook
+          ref: {{ .Release.Name }}
+      template:
+        name: {{ .Release.Name }}-build

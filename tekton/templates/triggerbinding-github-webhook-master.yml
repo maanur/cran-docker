@@ -1,0 +1,11 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  params:
+    - name: cloneurl
+      value: $(body.repository.ssh_url)
+    - name: revision
+      value: master

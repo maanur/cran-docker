@@ -1,0 +1,40 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: {{ .Release.Name }}-build
+spec:
+  params:
+    - name: cloneurl
+    - name: revision
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: {{ .Release.Name }}-build-
+      spec:
+        pipelineRef:
+          name: {{ .Values.buildPipelineName }}
+        serviceAccountName: {{ .Values.serviceAccountName }}
+        params:
+          - name: cloneurl
+            value: $(params.cloneurl)
+          - name: revision
+            value: $(params.revision)
+          - name: registry
+            value: {{ .Values.imageCredentials.registry }}
+          - name: registry-tlsverify
+            value: {{ .Values.imageCredentials.tlsVerify | quote }}
+          - name: image-name
+            value: {{ .Values.imageName }}
+          - name: image-tag
+            value: latest
+        workspaces:
+          - name: source
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 16Mi

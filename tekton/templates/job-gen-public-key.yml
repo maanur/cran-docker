@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-public-key
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ .Release.Name }}-sa
+      containers:
+        - name: public-key
+          image: docker.io/k3integrations/kubectl:latest
+          workingDir: /var/rsa
+          command: ["/bin/bash"]
+          args:
+            - -c
+            - |
+              PUBLIC_KEY=$(ssh-keygen -y -f ssh-privatekey);
+              kubectl patch secret $RELEASE_NAME-ssh -p "{\"stringData\": {\"ssh-publickey\":\"$PUBLIC_KEY\"}}";
+          volumeMounts:
+            - mountPath: /var/rsa
+              name: rsa-key
+          env:
+            - name: RELEASE_NAME
+              value: {{ .Release.Name | quote }}
+        {{- if not .Values.gitHost.knownHostsString }}
+        - name: known-hosts
+          image: docker.io/k3integrations/kubectl:latest
+          command: ["/bin/bash"]
+          args:
+            - -c
+            - |
+              ssh -o StrictHostKeyChecking=no $GIT_HOST;
+              KNOWN_HOSTS=$(ssh-keyscan -t rsa $GIT_HOST 2>/dev/null);
+              kubectl patch secret $RELEASE_NAME-ssh -p "{\"stringData\": {\"known_hosts\":\"$KNOWN_HOSTS\"}}";
+          env:
+            - name: RELEASE_NAME
+              value: {{ .Release.Name | quote }}
+            - name: GIT_HOST
+              value: {{ .Values.gitHost.name | quote }}
+        {{- end }}
+      volumes:
+        - name: rsa-key
+          secret:
+            secretName: tekton-ssh

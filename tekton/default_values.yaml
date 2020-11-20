@@ -1,0 +1,11 @@
+gitHost:
+  name: github.com
+  knownHostsString: {}
+
+imageName: maanur/cran-docker
+
+imageCredentials:
+  registry: ""
+  username: ""
+  password: ""
+  tlsVerify: ""

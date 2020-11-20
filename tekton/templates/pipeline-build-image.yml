@@ -1,0 +1,52 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: {{ .Release.Name }}-build
+spec:
+  params:
+    - name: cloneurl
+      type: string
+    - name: revision
+      type: string
+    - name: registry
+      type: string
+    - name: registry-tlsverify
+      type: string
+    - name: image-name
+      type: string
+      default: cran-docker
+    - name: image-tag
+      type: string
+      default: latest
+  tasks:
+    - name: git-clone
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.cloneurl)
+        - name: revision
+          value: $(params.revision)
+      workspaces:
+        - name: output
+          workspace: source
+    - name: image-build
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      params:
+        - name: FORMAT
+          value: docker
+        - name: TLSVERIFY
+          value: $(params.registry-tlsverify)
+        - name: IMAGE
+          value: $(params.registry)/$(params.image-name):$(params.image-tag)
+      workspaces:
+        - name: source
+          workspace: source
+      runAfter:
+        - git-clone
+  workspaces:
+    - name: source
