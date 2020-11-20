@@ -1,9 +1,5 @@
 Public key for GIT access can be retrieved from secret {{ .Release.Name}}-ssh:
     kubectl get secret {{ .Release.Name}}-ssh --output=go-template="{{"{{"}} index .data \"ssh-publickey\" | base64decode {{"}}"}}"
-or
-    oc get secret {{ .Release.Name}}-ssh --output=go-template="{{"{{"}} index .data \"ssh-publickey\" | base64decode {{"}}"}}"
 
 Webhook secret can be retrieved from secret {{ .Release.Name}}-webhook:
     kubectl get secret {{ .Release.Name}}-webhook --output=go-template="{{"{{"}} .data.value | base64decode {{"}}"}}"
-or
-    oc get secret {{ .Release.Name}}-webhook --output=go-template="{{"{{"}} .data.value | base64decode {{"}}"}}"

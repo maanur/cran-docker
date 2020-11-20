@@ -14,8 +14,8 @@ spec:
         generateName: {{ .Release.Name }}-build-
       spec:
         pipelineRef:
-          name: {{ .Values.buildPipelineName }}
-        serviceAccountName: {{ .Values.serviceAccountName }}
+          name: {{ .Release.Name }}-build
+        serviceAccountName: {{ .Release.Name }}-sa
         params:
           - name: cloneurl
             value: $(params.cloneurl)
